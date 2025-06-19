@@ -6,12 +6,14 @@ let gravity = 2;
 let score;
 let obstacles;
 let frame;
+let gameOver = false;
 
 function initGame() {
   player = { x: 50, y: 320, width: 50, height: 50, vy: 0, jumping: false };
   score = 0;
   obstacles = [];
   frame = 0;
+  gameOver = false;
 }
 
 function drawPlayer() {
@@ -27,6 +29,8 @@ function drawObstacles() {
 }
 
 function update() {
+  if (gameOver) return;
+
   frame++;
 
   if (player.jumping) {
@@ -52,7 +56,7 @@ function update() {
       player.y < obs.y + obs.height &&
       player.y + player.height > obs.y
     ) {
-      initGame();  // Reset game when hit
+      gameOver = true;
     }
   }
 
@@ -67,19 +71,36 @@ function drawScore() {
   ctx.fillText("ESG Score: " + score, 10, 20);
 }
 
+function drawGameOver() {
+  if (gameOver) {
+    ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "white";
+    ctx.font = "30px Arial";
+    ctx.fillText("Game Over", canvas.width / 2 - 80, canvas.height / 2 - 10);
+    ctx.font = "20px Arial";
+    ctx.fillText("Press SPACE to restart", canvas.width / 2 - 110, canvas.height / 2 + 30);
+  }
+}
+
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   update();
   drawPlayer();
   drawObstacles();
   drawScore();
+  drawGameOver();
   requestAnimationFrame(gameLoop);
 }
 
 document.addEventListener("keydown", function (e) {
-  if (e.code === "Space" && !player.jumping) {
-    player.vy = -20;
-    player.jumping = true;
+  if (e.code === "Space") {
+    if (gameOver) {
+      initGame();
+    } else if (!player.jumping) {
+      player.vy = -20;
+      player.jumping = true;
+    }
   }
 });
 
