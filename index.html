@@ -4,9 +4,51 @@
   <meta charset="UTF-8">
   <title>ESG Endless Runner</title>
   <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    /* Optional fallback in case style.css is missing */
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #f1f8e9;
+      font-family: 'Segoe UI', sans-serif;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .game-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    canvas {
+      background-color: #c8e6c9;
+      border: 3px solid #388e3c;
+      box-shadow: 0 0 20px rgba(56, 142, 60, 0.4);
+    }
+
+    h1 {
+      font-size: 24px;
+      color: #2e7d32;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 850px) {
+      canvas {
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
 </head>
 <body>
-  <canvas id="gameCanvas" width="800" height="400"></canvas>
+  <div class="game-container">
+    <h1>🌱 ESG Runner</h1>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+  </div>
   <script src="script.js"></script>
 </body>
 </html>
