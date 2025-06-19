@@ -1,11 +1,18 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-let player = { x: 50, y: 320, width: 50, height: 50, vy: 0, jumping: false };
+let player;
 let gravity = 2;
-let score = 0;
-let obstacles = [];
-let frame = 0;
+let score;
+let obstacles;
+let frame;
+
+function initGame() {
+  player = { x: 50, y: 320, width: 50, height: 50, vy: 0, jumping: false };
+  score = 0;
+  obstacles = [];
+  frame = 0;
+}
 
 function drawPlayer() {
   ctx.fillStyle = "#2e7d32";
@@ -45,8 +52,7 @@ function update() {
       player.y < obs.y + obs.height &&
       player.y + player.height > obs.y
     ) {
-      alert("Game Over! ESG Score: " + score);
-      document.location.reload();
+      initGame();  // Reset game when hit
     }
   }
 
@@ -77,4 +83,5 @@ document.addEventListener("keydown", function (e) {
   }
 });
 
+initGame();
 gameLoop();
