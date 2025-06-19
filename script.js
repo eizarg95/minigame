@@ -8,6 +8,10 @@ let obstacles;
 let frame;
 let gameOver = false;
 let lives;
+let flash = false;
+let flashTimer = 0;
+let heartImg = new Image();
+heartImg.src = "https://upload.wikimedia.org/wikipedia/commons/4/49/Red_Heart.svg"; // public heart SVG
 
 function initGame() {
   player = { x: 50, y: canvas.height - 50, width: 50, height: 50, vy: 0, jumping: false };
@@ -16,6 +20,8 @@ function initGame() {
   frame = 0;
   lives = 3;
   gameOver = false;
+  flash = false;
+  flashTimer = 0;
 }
 
 function drawPlayer() {
@@ -60,7 +66,9 @@ function update() {
       player.y < obs.y + obs.height
     ) {
       lives--;
-      obstacles = []; // Clear obstacles after hit
+      flash = true;
+      flashTimer = 10;
+      obstacles = [];
       if (lives <= 0) {
         gameOver = true;
       }
@@ -69,7 +77,6 @@ function update() {
   }
 
   obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
-
   score++;
 }
 
@@ -77,7 +84,10 @@ function drawScore() {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
   ctx.fillText("ESG Score: " + score, 10, 20);
-  ctx.fillText("Lives: " + lives, 10, 45);
+
+  for (let i = 0; i < lives; i++) {
+    ctx.drawImage(heartImg, canvas.width - 30 * (i + 1), 10, 20, 20);
+  }
 }
 
 function drawGameOver() {
@@ -92,11 +102,23 @@ function drawGameOver() {
   }
 }
 
+function drawFlash() {
+  if (flash && flashTimer > 0) {
+    ctx.fillStyle = "rgba(255, 0, 0, 0.3)";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    flashTimer--;
+    if (flashTimer === 0) {
+      flash = false;
+    }
+  }
+}
+
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawPlayer();
   drawObstacles();
   drawScore();
+  drawFlash();
   drawGameOver();
   update();
   if (!gameOver) {
