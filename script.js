@@ -7,12 +7,14 @@ let score;
 let obstacles;
 let frame;
 let gameOver = false;
+let lives;
 
 function initGame() {
-  player = { x: 50, y: 320, width: 50, height: 50, vy: 0, jumping: false };
+  player = { x: 50, y: canvas.height - 50, width: 50, height: 50, vy: 0, jumping: false };
   score = 0;
   obstacles = [];
   frame = 0;
+  lives = 3;
   gameOver = false;
 }
 
@@ -36,8 +38,8 @@ function update() {
   if (player.jumping) {
     player.vy += gravity;
     player.y += player.vy;
-    if (player.y >= 320) {
-      player.y = 320;
+    if (player.y >= canvas.height - player.height) {
+      player.y = canvas.height - player.height;
       player.jumping = false;
       player.vy = 0;
     }
@@ -45,20 +47,24 @@ function update() {
 
   if (frame % 100 === 0) {
     let height = 50;
-    obstacles.push({ x: 800, y: 350, width: 30, height: height });
+    obstacles.push({ x: canvas.width, y: canvas.height - height, width: 30, height: height });
   }
 
   for (let obs of obstacles) {
     obs.x -= 5;
 
-    // Improved collision detection
     if (
       player.x < obs.x + obs.width &&
       player.x + player.width > obs.x &&
       player.y + player.height > obs.y &&
       player.y < obs.y + obs.height
     ) {
-      gameOver = true;
+      lives--;
+      obstacles = []; // Clear obstacles after hit
+      if (lives <= 0) {
+        gameOver = true;
+      }
+      break;
     }
   }
 
@@ -71,6 +77,7 @@ function drawScore() {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
   ctx.fillText("ESG Score: " + score, 10, 20);
+  ctx.fillText("Lives: " + lives, 10, 45);
 }
 
 function drawGameOver() {
